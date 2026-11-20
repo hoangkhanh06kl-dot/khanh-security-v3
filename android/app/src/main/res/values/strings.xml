@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Khánh Security</string>
+    <string name="title_activity_main">Khánh Security</string>
+    <string name="package_name">com.khanh.security</string>
+    <string name="custom_url_scheme">com.khanh.security</string>
+</resources>

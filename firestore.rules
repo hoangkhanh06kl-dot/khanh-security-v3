@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signed() { return request.auth != null; }
+    function mine(uid) { return signed() && request.auth.uid == uid; }
+    function participant(data) { return signed() && (data.ownerId == request.auth.uid || data.guardianId == request.auth.uid); }
+    match /users/{uid} {
+      allow read, create, update: if mine(uid);
+      match /history/{id} {
+        allow read, delete: if mine(uid);
+        allow create: if mine(uid) && request.resource.data.keys().hasOnly(['type','title','result','score','createdAt']) && request.resource.data.type in ['message','link','phone','audio','qr'] && request.resource.data.title is string && request.resource.data.title.size() <= 150 && request.resource.data.result is string && request.resource.data.result.size() <= 200 && (request.resource.data.score == null || (request.resource.data.score is number && request.resource.data.score >= 0 && request.resource.data.score <= 100)) && request.resource.data.createdAt == request.time;
+      }
+    }
+    match /guardianLinks/{code} {
+      allow get: if signed() && (participant(resource.data) || resource.data.status == 'waiting');
+      allow list: if participant(resource.data);
+      allow create: if signed() && request.resource.data.keys().hasOnly(['ownerId','guardianId','status','createdAt']) && mine(request.resource.data.ownerId) && request.resource.data.guardianId == '' && request.resource.data.status == 'waiting' && request.resource.data.createdAt == request.time && code.matches('^[0-9a-f-]{36}$');
+      allow update: if signed() && ((resource.data.status == 'waiting' && resource.data.ownerId != request.auth.uid && request.resource.data.guardianId == request.auth.uid && request.resource.data.status == 'pending' && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['guardianId','status'])) || (mine(resource.data.ownerId) && resource.data.status == 'pending' && request.resource.data.status == 'active' && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])));
+      allow delete: if participant(resource.data);
+      match /alerts/{id} {
+        function link() { return get(/databases/$(database)/documents/guardianLinks/$(code)).data; }
+        allow read: if participant(link()) && link().status == 'active';
+        allow create: if mine(link().ownerId) && link().status == 'active' && request.resource.data.keys().hasOnly(['type','title','score','createdAt']) && request.resource.data.type in ['message','link','phone','audio','qr'] && request.resource.data.title == 'Phát hiện nguy cơ cao' && request.resource.data.score is int && request.resource.data.score >= 60 && request.resource.data.score <= 100 && request.resource.data.createdAt == request.time;
+      }
+    }
+    match /phoneReports/{phone}/reports/{uid} {
+      allow read: if signed();
+      allow create: if mine(uid) && phone.matches('^0[35789][0-9]{8}$') && request.resource.data.keys().hasOnly(['reason','createdAt']) && request.resource.data.reason in ['Giả mạo công an','Giả mạo ngân hàng','Yêu cầu chuyển tiền','Yêu cầu mã OTP','Cuộc gọi quấy rối','Dấu hiệu lừa đảo khác'] && request.resource.data.createdAt == request.time;
+      allow delete: if mine(uid);
+    }
+  }
+}
