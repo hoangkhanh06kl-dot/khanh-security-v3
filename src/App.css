@@ -1170,3 +1170,110 @@ html[data-ks-theme="light"] .ks-stat-blue { color:#1d5d91; }html[data-ks-theme="
 html[data-ks-theme="light"] .high-risk,html[data-ks-theme="light"] .scanner .scan-result.high-risk,html[data-ks-theme="light"] .ks-risk-summary strong { color:#b91c1c; }
 html[data-ks-theme="light"] .medium-risk,html[data-ks-theme="light"] .scanner .scan-result.medium-risk { color:#92400e; }
 html[data-ks-theme="light"] .low-risk,html[data-ks-theme="light"] .scanner .scan-result.low-risk { color:#166534; }
+
+/* KHANH SECURITY AI */
+
+.assistant-header {
+  padding: 30px 20px;
+  background: linear-gradient(135deg, #142236, #12434a);
+  border: 1px solid #315d70;
+  border-radius: 22px;
+  color: #67e8f9;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.assistant-header h2 {
+  color: #ffffff;
+  margin: 15px 0;
+}
+
+.assistant-header p {
+  color: #bfd9e7;
+}
+
+.assistant-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 25px;
+  border: 2px dashed #38bdf8;
+  border-radius: 18px;
+  margin: 20px 0;
+  background: #142236;
+  color: #93c5fd;
+  cursor: pointer;
+}
+
+.assistant-upload span {
+  font-size: 13px;
+}
+
+.assistant-upload input {
+  max-width: 100%;
+}
+
+.assistant-preview img {
+  width: 100%;
+  max-height: 360px;
+  object-fit: contain;
+  border-radius: 15px;
+}
+
+.assistant-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 20px 0;
+}
+
+.assistant-consent input {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.assistant-score {
+  text-align: center;
+  font-size: 42px;
+  font-weight: bold;
+  padding: 18px;
+}
+
+.assistant-loading {
+  text-align: center;
+  padding: 24px;
+  color: #38bdf8;
+}
+
+.assistant-spinner {
+  width: 42px;
+  height: 42px;
+  margin: 0 auto 15px;
+  border: 3px solid #22344b;
+  border-top-color: #38bdf8;
+  border-radius: 50%;
+  animation: assistantSpin 0.8s linear infinite;
+}
+
+.assistant-error {
+  padding: 15px;
+  background: #421e2a;
+  color: #fda4af;
+  border-radius: 12px;
+}
+
+@keyframes assistantSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .assistant-spinner {
+    animation: none;
+  }
+}
